@@ -4,6 +4,9 @@ use std::io::{self, Write};
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use rand::seq::SliceRandom;
+use crate::explore::{ChessMove, MoveSequence};
+use crate::play::PlaySession;
 
 #[derive(Error, Debug)]
 pub enum OpeningError {
@@ -82,6 +85,7 @@ impl Opening {
         println!("\nAvailable commands:");
         println!("  list    - List all move sequences");
         println!("  show <sequence> - Show notes for a specific sequence");
+        println!("  play    - Start a practice game");
         println!("  quit    - Exit the study session");
         println!();
 
@@ -100,6 +104,12 @@ impl Opening {
                         println!("  {}", sequence);
                     }
                     println!();
+                }
+                "play" => {
+                    let mut session = PlaySession::new(self);
+                    if let Err(e) = session.run() {
+                        eprintln!("Error during play session: {}", e);
+                    }
                 }
                 "quit" => break,
                 cmd if cmd.starts_with("show ") => {
