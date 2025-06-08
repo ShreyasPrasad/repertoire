@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use rand::seq::SliceRandom;
 use crate::explore::{ChessMove, MoveSequence};
-use crate::play::PlaySession;
+use crate::play::{PlaySession, PlayerColor};
 use crate::theme::Theme;
 
 #[derive(Error, Debug)]
@@ -87,8 +87,8 @@ impl Opening {
         println!("{}", theme.format_prompt(&format!("Description: {}", self.description)));
         println!("\n{}", theme.format_prompt("Available commands:"));
         println!("  {} - List all move sequences", theme.format_prompt("list"));
-        println!("  {} - Show notes for a specific sequence", theme.format_prompt("show <sequence>"));
         println!("  {} - Start a practice game", theme.format_prompt("play"));
+        println!("  {} - Show notes for a specific sequence", theme.format_prompt("show <sequence>"));
         println!("  {} - Exit the study session", theme.format_prompt("quit"));
         println!();
 
@@ -109,7 +109,26 @@ impl Opening {
                     println!();
                 }
                 "play" => {
-                    let mut session = PlaySession::new(self);
+                    println!("\n{}", theme.format_prompt("Choose your color:"));
+                    println!("  {} - Play as White", theme.format_prompt("white"));
+                    println!("  {} - Play as Black", theme.format_prompt("black"));
+                    print!("{}", theme.format_prompt("Color > "));
+                    io::stdout().flush()?;
+
+                    let mut color_input = String::new();
+                    io::stdin().read_line(&mut color_input)?;
+                    let color_input = color_input.trim().to_lowercase();
+
+                    let player_color = match color_input.as_str() {
+                        "white" => PlayerColor::White,
+                        "black" => PlayerColor::Black,
+                        _ => {
+                            println!("\n{}", theme.format_prompt("Invalid color. Please choose 'white' or 'black'.\n"));
+                            continue;
+                        }
+                    };
+
+                    let mut session = PlaySession::new(self, player_color);
                     if let Err(e) = session.run() {
                         eprintln!("{}", theme.format_prompt(&format!("Error during play session: {}", e)));
                     }

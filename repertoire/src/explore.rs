@@ -19,6 +19,18 @@ impl MoveSequence {
         self.moves.push(mv);
     }
 
+    pub fn remove_last_move(&mut self) {
+        self.moves.pop();
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.moves.len() == 0
+    }
+
+    pub fn to_key(&self) -> String {
+        self.moves.iter().map(|mv| mv.0.clone()).collect::<Vec<String>>().join("-")
+    }
+
     /// Converts the move sequence to PGN format
     pub fn to_pgn(&self) -> String {
         let mut pgn = String::new();
