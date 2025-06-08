@@ -1,6 +1,7 @@
 mod opening;
 mod explore;
 mod play;
+mod theme;
 
 use clap::Parser;
 use std::path::PathBuf;

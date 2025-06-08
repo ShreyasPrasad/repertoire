@@ -2,12 +2,14 @@ use std::io::{self, Write};
 use rand::seq::SliceRandom;
 use crate::explore::{ChessMove, MoveSequence};
 use crate::opening::Opening;
+use crate::theme::Theme;
 
 /// Handles the interactive play loop for practicing an opening
 pub struct PlaySession<'a> {
     opening: &'a Opening,
     move_sequence: MoveSequence,
     current_sequence: String,
+    theme: Theme,
 }
 
 impl<'a> PlaySession<'a> {
@@ -16,19 +18,20 @@ impl<'a> PlaySession<'a> {
             opening,
             move_sequence: MoveSequence::new(),
             current_sequence: String::new(),
+            theme: Theme::new(),
         }
     }
 
     /// Starts an interactive play loop for practicing the opening
     pub fn run(&mut self) -> io::Result<()> {
-        println!("\nStarting practice game. Available commands:");
-        println!("  move <chess move> - Make a move (e.g., 'move e4')");
-        println!("  explore          - Open current position in LiChess");
-        println!("  stop            - End practice game");
+        println!("\n{}", self.theme.format_prompt("Starting practice game. Available commands:"));
+        println!("  {} - Make a move (e.g., 'move e4')", self.theme.format_prompt("move <chess move>"));
+        println!("  {} - Open current position in LiChess", self.theme.format_prompt("explore"));
+        println!("  {} - End practice game", self.theme.format_prompt("stop"));
         println!();
 
         loop {
-            print!("(practice) > ");
+            print!("{}", self.theme.format_prompt("(practice) > "));
             io::stdout().flush()?;
 
             let mut input = String::new();
@@ -39,7 +42,7 @@ impl<'a> PlaySession<'a> {
                 "stop" => break,
                 "explore" => self.handle_explore()?,
                 cmd if cmd.starts_with("move ") => self.handle_move(cmd)?,
-                _ => println!("\nUnknown command. Type 'move <chess move>', 'explore', or 'stop'.\n"),
+                _ => println!("\n{}", self.theme.format_prompt("Unknown command. Type 'move <chess move>', 'explore', or 'stop'.\n")),
             }
         }
 
@@ -48,7 +51,7 @@ impl<'a> PlaySession<'a> {
 
     fn handle_explore(&self) -> io::Result<()> {
         let url = self.move_sequence.to_lichess_url();
-        println!("\nOpen this URL in your browser to explore the position:");
+        println!("\n{}", self.theme.format_prompt("Open this URL in your browser to explore the position:"));
         println!("{}\n", url);
         Ok(())
     }
@@ -66,8 +69,8 @@ impl<'a> PlaySession<'a> {
 
         // Check if this sequence exists in our opening
         if let Some(note) = self.opening.moves.get(&self.current_sequence) {
-            println!("\nYour move: {}", mv);
-            println!("Note: {}", note.note);
+            println!("\n{}", self.theme.format_prompt(&format!("Your move: {}", mv)));
+            println!("{}", self.theme.format_note(&format!("Note: {}", note.note)));
 
             // Find all possible next moves
             let mut possible_moves = Vec::new();
@@ -88,13 +91,13 @@ impl<'a> PlaySession<'a> {
                 self.current_sequence.push('-');
                 self.current_sequence.push_str(response);
 
-                println!("\nComputer plays: {}", response);
+                println!("\n{}", self.theme.format_prompt(&format!("Computer plays: {}", response)));
                 if let Some(note) = self.opening.moves.get(&self.current_sequence) {
-                    println!("Note: {}", note.note);
+                    println!("{}", self.theme.format_note(&format!("Note: {}", note.note)));
                 }
             }
         } else {
-            println!("\nDeviation! This is not a recorded move in the opening.");
+            println!("\n{}", self.theme.format_prompt("Deviation! This is not a recorded move in the opening."));
         }
         println!();
 
