@@ -7,8 +7,8 @@
         "e4": {
             "note": "The move that black responds most often to with the Caro Kann."
         },
-        "e4-c6-d4-d5-e5": {
-            "note": "The advanced Caro Kann. White fights for space and black must quickly develop."
+        "e4-c6": {
+            "note": "The starting move for black. Looking to push d5 and strike in the center."
         }
     }
 }
