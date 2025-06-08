@@ -2,7 +2,7 @@
 
 Tool to help me memorize chess openings. Built as a CLI application that loads and manages `.opening` files. Contains some tools for interacting with and annotating an opening you are exploring.
 
-### `The .opening` file format
+### The `.opening` file format
 
 This is a JSON-like format for saving an opening study. Save your openings using this file format. Here's an example for the Caro Kann:
 
@@ -24,3 +24,13 @@ This is a JSON-like format for saving an opening study. Save your openings using
 ```
 
 ### Commands
+
+```
+Usage: repertoire [OPTIONS]
+
+Options:
+  -s, --study <FILENAME>  Load and study an existing opening file
+  -n, --new               Start a new opening study session
+  -h, --help              Print help
+  -V, --version           Print version
+```
