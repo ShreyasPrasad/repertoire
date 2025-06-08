@@ -77,7 +77,7 @@ impl<'a> PlaySession<'a> {
             for (seq, _) in &self.opening.moves {
                 if seq.starts_with(&self.current_sequence) && seq != &self.current_sequence {
                     if let Some(next_move) = seq.strip_prefix(&self.current_sequence)
-                        .and_then(|s| s.strip_prefix("-"))
+                        .and_then(|s| s.strip_prefix("-")).filter(|candidate| !candidate.contains("-"))
                     {
                         possible_moves.push(next_move);
                     }
