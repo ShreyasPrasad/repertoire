@@ -97,7 +97,10 @@ impl<'a> PlaySession<'a> {
                 }
             }
         } else {
-            println!("\n{}", self.theme.format_prompt("Deviation! This is not a recorded move in the opening."));
+            let url = self.move_sequence.to_lichess_url();
+            println!("\n{}", self.theme.format_deviation("Deviation! This is not a recorded move in the opening."));
+            println!("{}", self.theme.format_deviation("Explore this position in LiChess:"));
+            println!("{}\n", url);
         }
         println!();
 

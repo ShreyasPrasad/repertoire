@@ -6,6 +6,8 @@ pub struct Theme {
     pub prompt: Colour,
     /// Color for move notes and annotations
     pub note: Colour,
+    /// Color for deviation messages
+    pub deviation: Colour,
 }
 
 impl Theme {
@@ -13,6 +15,7 @@ impl Theme {
         Self {
             prompt: Colour::Blue,
             note: Colour::Green,
+            deviation: Colour::Red,
         }
     }
 
@@ -24,5 +27,10 @@ impl Theme {
     /// Formats a note with the theme's note color
     pub fn format_note(&self, note: &str) -> String {
         self.note.paint(note).to_string()
+    }
+
+    /// Formats a deviation message with the theme's deviation color
+    pub fn format_deviation(&self, message: &str) -> String {
+        self.deviation.paint(message).to_string()
     }
 } 
